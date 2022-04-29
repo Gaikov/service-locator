@@ -1,0 +1,35 @@
+{
+  "name": "advanced-service-locator",
+  "version": "1.0.0-dev.0",
+  "description": "Object oriented ServiceLocator for use with TypeScript or JS",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "repository": "",
+  "scripts": {
+    "test": "jest",
+    "clean": "run-func ./scripts/build.js clean",
+    "post-build": "run-func ./scripts/build.js postBuild",
+    "build": "npm run clean && ts-index -s ./src && tsc && npm run post-build && ts-index -s ./src -c",
+    "publish-dev": "npm version prerelease && npm run build && cd dist && npm publish && cd .."
+  },
+  "keywords": [
+    "service",
+    "service locator",
+    "decoupling",
+    "flexible",
+    "extendable",
+    "design pattern",
+    "object oriented"
+  ],
+  "author": "Roman Gaikov",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "easy-ts-index": "^1.0.0-rc.4",
+    "fs-extra": "^10.0.1",
+    "jest": "^27.5.1",
+    "run-func": "^3.0.0",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.6.2"
+  }
+}
