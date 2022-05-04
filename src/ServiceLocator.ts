@@ -34,16 +34,18 @@ class ClassMapping<TClass extends ILocatable> implements IClassMapping<TClass> {
     constructor(readonly mapping: Map<Constructor<ILocatable>, ClassMapping<ILocatable>>, readonly locator: ILocator) {
     }
 
-    asSingleton(): void {
+    asSingleton(): IClassMapping<TClass> {
         this._singleton = true;
+        return this;
     }
 
-    to(cls: Constructor<TClass>): void {
+    to(cls: Constructor<TClass>): IClassMapping<TClass> {
         this.mapping.set(cls, this);
         if (this._ctor !== cls) {
             this._ctor = cls;
             this._instance = null;
         }
+        return this;
     }
 
     getInstance(): TClass {
