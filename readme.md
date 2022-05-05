@@ -1,79 +1,75 @@
-![github CI](https://github.com/Gaikov/event-dispatcher/actions/workflows/node.js.yml/badge.svg)
+![github CI](https://github.com/Gaikov/service-locator/actions/workflows/node.js.yml/badge.svg)
 
-# advanced-event-dispatcher
-Object based/oriented event dispatcher/emitter for use with TypeScript or JS. 
+# advanced-service-locator
+Class based ServiceLocator for use with TypeScript or JS.
 
-It uses class type of event as an event target to add event handlers and an instance of the event will be passed to an event handler when it will be dispatched. 
-So an event and its data contained in the same object instance.  
-
-The module uses modern browser API and if you want to launch you code in the old browsers, probably you need to add polyfills for Map class.
+[More about ServiceLocator pattern](https://en.wikipedia.org/wiki/Service_locator_pattern)
 
 ### Install
 ```text
-npm i advanced-event-dispatcher
+npm i advanced-service-locator
 ```
 
 ### Import
 ```TypeScript
 //es5
-const {BaseEvent, EventDispatcher} = require("advanced-event-dispatcher");
+const {ServiceLocator, ILocatable, ILocator} = require("advanced-service-locator");
 //es6+ and ts
-import {BaseEvent, EventDispatcher} from "advanced-event-dispatcher";
+import {ServiceLocator, ILocatable, ILocator} from "advanced-service-locator";
 ```
 
-### Define an event
+### Example classes
 ```TypeScript
-//Declare an event
-class Event extends BaseEvent {
-    constructor(readonly message: string = "none") {
-        super();
+class TestClass implements ILocatable {
+
+    init(locator: ILocator): void {
+        //will be called after instantiation
+    }
+
+    getMessage(): string {
+        return "Hello from ServiceLocator!";
+    }
+}
+
+class TestClassCustom extends TestClass {
+    getMessage(): string {
+        return "This is custom message!";
     }
 }
 ```
 
-### Create instance of event dispatcher
+### locate an instance
 ```TypeScript
-const dispatcher = new EventDispatcher();
+const locator = new ServiceLocator();
+const a = locator.locate(TestClass);
 ```
 
-### Add event handler
+### Class mapping
 ```TypeScript
-const handler = (e:Event) => console.log(e.message);
+const locator = new ServiceLocator();
+locator.mapClass(TestClass).to(TestClassCustom);
 
-dispatcher.addEventHandler(Event, handler);
+const a = locator.locate(TestClass);
+
+console.log(a.getMessage()); //will output "This is custom message!"
 ```
 
-### Dispatching events
+### Map class as a singleton
 ```TypeScript
-dispatcher.dispatchEvent(new Event("Hello from advanced-event-dispatcher!"));
+const locator = new ServiceLocator();
+locator.mapClass(TestClass).asSingleton();
+
+const a = locator.locate(TestClass);
+const b = locator.locate(TestClass);
+console.log(a === b); //will output "true"
 ```
 
-### Remove event handler
+### Recommend to use as a singleton
 ```TypeScript
-dispatcher.removeEventHandler(Event, handler);
-dispatcher.dispatchEvent(new Event("This event will not be handled"));
-```
-
-### EventBus example
-```TypeScript
-class EventBus extends EventDispatcher {
-    static readonly instance = new EventBus();
+class Locator {
+    static readonly instance = new ServiceLocator();
 }
 
-class Observer {
-    constructor() {
-        EventBus.instance.addEventHandler(Event, this.onEvent, this);
-    }
-
-    onEvent(e:Event) {
-        console.log(this.constructor.name, ":", e.message);
-    }
-}
-
-const c = new Observer();
-EventBus.instance.dispatchEvent(new Event("Hello from EventBus!"));
+const a = Locator.instance.locate(TestClass);
 ```
-
-### Additional examples
-See full examples code, including JavaScript, [here](https://github.com/Gaikov/advanced-event-dispatcher-exmples)
 

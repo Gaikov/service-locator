@@ -2,14 +2,19 @@ import {ServiceLocator} from "../src/ServiceLocator";
 import {ILocatable, ILocator} from "../src/ILocatable";
 
 class TestClass implements ILocatable {
-    value: number = 0;
 
     init(locator: ILocator): void {
+    }
+
+    getMessage(): string {
+        return "Hello from ServiceLocator!";
     }
 }
 
 class TestClassCustom extends TestClass {
-
+    getMessage(): string {
+        return "This is custom message!";
+    }
 }
 
 describe("ServiceLocator", () => {
@@ -17,13 +22,11 @@ describe("ServiceLocator", () => {
         const locator = new ServiceLocator();
 
         const a = locator.locate(TestClass);
-        a.value = 1;
-
         const b = locator.locate(TestClass);
 
         expect(a instanceof TestClass).toEqual(true);
+        expect(b instanceof TestClass).toEqual(true);
         expect(a !== b).toEqual(true);
-        expect(b.value).toEqual(0);
     })
 
     it("mapping", () => {
