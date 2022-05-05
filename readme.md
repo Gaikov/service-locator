@@ -38,7 +38,7 @@ class TestClassCustom extends TestClass {
 }
 ```
 
-### locate an instance
+### Locate an instance
 ```TypeScript
 const locator = new ServiceLocator();
 const a = locator.locate(TestClass);
