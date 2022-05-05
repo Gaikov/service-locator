@@ -7,7 +7,11 @@ export class ServiceLocator implements ILocator {
     protected _map = new Map<Constructor<ILocatable>, ClassMapping<ILocatable>>()
 
     mapClass<T extends ILocatable, T2 extends T>(ctor: Constructor<T>): IClassMapping<T2> {
-        const mapping = this._map.get(ctor) || new ClassMapping<ILocatable>(this._map, this);
+        let mapping = this._map.get(ctor);
+        if (!mapping) {
+            mapping = new ClassMapping<ILocatable>(this._map, this);
+            mapping.to(ctor);
+        }
         this._map.set(ctor, mapping);
         return mapping;
     }
